@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Licitaciones IA</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <span class="icon">🤖</span>
+                <h1>Licitaciones IA</h1>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="total-tenders">0</span>
+                    <span class="stat-label">Encontradas</span>
+                </div>
+                <div class="stat-item highlight">
+                    <span class="stat-value" id="high-score-tenders">0</span>
+                    <span class="stat-label">Alta Relevancia</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="filters">
+                <h2>Oportunidades Recientes</h2>
+                <!-- Future: Add filters here -->
+            </div>
+
+            <div id="tenders-grid" class="grid">
+                <!-- Cards will be injected here by JS -->
+                <div class="loading">Cargando licitaciones...</div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
