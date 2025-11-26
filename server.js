@@ -1,18 +1,41 @@
 const express = require('express');
 const cors = require('cors');
 const { pool, initDb } = require('./db');
-if (!user) {
-    // Create new user
-    const insert = await pool.query(
-        'INSERT INTO users (google_id, email, display_name, avatar_url) VALUES ($1, $2, $3, $4) RETURNING *',
-        [profile.id, profile.emails[0].value, profile.displayName, profile.photos[0].value]
-    );
-    user = insert.rows[0];
-}
-return done(null, user);
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const session = require('express-session');
+require('dotenv').config();
+
+const app = express();
+app.set('trust proxy', 1); // Trust first proxy (Easypanel/Nginx)
+const PORT = process.env.PORT || 3000;
+const API_KEY = process.env.API_KEY || 'secret-key';
+
+// Passport Config
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: '/auth/google/callback',
+    proxy: true
+},
+    async (accessToken, refreshToken, profile, done) => {
+        try {
+            // Check if user exists
+            const res = await pool.query('SELECT * FROM users WHERE google_id = $1', [profile.id]);
+            let user = res.rows[0];
+
+            if (!user) {
+                // Create new user
+                const insert = await pool.query(
+                    'INSERT INTO users (google_id, email, display_name, avatar_url) VALUES ($1, $2, $3, $4) RETURNING *',
+                    [profile.id, profile.emails[0].value, profile.displayName, profile.photos[0].value]
+                );
+                user = insert.rows[0];
+            }
+            return done(null, user);
         } catch (err) {
-    return done(err, null);
-}
+            return done(err, null);
+        }
     }
 ));
 
