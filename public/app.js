@@ -9,44 +9,78 @@ async function checkAuth() {
         const data = await res.json();
 
         if (data.authenticated) {
-            showDashboard(data.user);
+            updateUILoggedIn(data.user);
             fetchTenders();
         } else {
-            showAuth();
+            updateUILoggedOut();
         }
     } catch (err) {
         console.error('Auth check failed', err);
     }
 }
 
-function showDashboard(user) {
-    document.getElementById('auth-container').style.display = 'none';
-    document.getElementById('dashboard-container').style.display = 'block';
-
-    const controls = document.getElementById('user-controls');
-    controls.innerHTML = `
+function updateUILoggedIn(user) {
+    // Navbar
+    document.getElementById('guest-nav').style.display = 'none';
+    const userNav = document.getElementById('user-nav');
+    userNav.style.display = 'flex';
+    userNav.innerHTML = `
         <div class="user-info">
             <img src="${user.avatar_url || 'https://ui-avatars.com/api/?name=' + user.display_name}" alt="Avatar" class="avatar">
             <span>${user.display_name}</span>
-            <a href="/auth/logout" class="btn-logout">Salir</a>
+            <a href="/auth/logout" class="btn-text" style="color: var(--danger);">Salir</a>
         </div>
     `;
+
+    // Content
+    document.getElementById('hero-section').style.display = 'none';
+    document.getElementById('dashboard-container').style.display = 'block';
+
+    // Close modal if open
+    document.getElementById('auth-overlay').style.display = 'none';
 }
 
-function showAuth() {
-    document.getElementById('auth-container').style.display = 'flex';
+function updateUILoggedOut() {
+    // Navbar
+    document.getElementById('guest-nav').style.display = 'flex';
+    document.getElementById('user-nav').style.display = 'none';
+
+    // Content
+    document.getElementById('hero-section').style.display = 'block';
     document.getElementById('dashboard-container').style.display = 'none';
-    document.getElementById('user-controls').innerHTML = '';
 }
 
 function setupAuthListeners() {
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
+    const overlay = document.getElementById('auth-overlay');
+    const btnLogin = document.getElementById('btn-nav-login');
+    const btnRegister = document.getElementById('btn-nav-register');
+    const btnClose = document.getElementById('close-auth');
+
     const tabLogin = document.getElementById('tab-login');
     const tabRegister = document.getElementById('tab-register');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
     const msg = document.getElementById('auth-message');
 
-    if (!tabLogin || !tabRegister) return;
+    // Open Modal
+    function openModal(mode) {
+        overlay.style.display = 'flex';
+        msg.textContent = '';
+        if (mode === 'login') {
+            tabLogin.click();
+        } else {
+            tabRegister.click();
+        }
+    }
+
+    btnLogin.addEventListener('click', () => openModal('login'));
+    btnRegister.addEventListener('click', () => openModal('register'));
+    btnClose.addEventListener('click', () => overlay.style.display = 'none');
+
+    // Close on click outside
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.style.display = 'none';
+    });
 
     // Tabs
     tabLogin.addEventListener('click', () => {
@@ -80,7 +114,7 @@ function setupAuthListeners() {
             const data = await res.json();
 
             if (res.ok) {
-                showDashboard(data.user);
+                updateUILoggedIn(data.user);
                 fetchTenders();
             } else {
                 msg.textContent = data.error || 'Error al iniciar sesión';
