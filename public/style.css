@@ -177,3 +177,73 @@ header {
     padding: 2rem;
     color: var(--text-secondary);
 }
+
+/* Auth Styles */
+.btn-login {
+    background-color: var(--text-primary);
+    color: var(--bg-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.btn-login:hover {
+    opacity: 0.9;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.btn-logout {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.btn-logout:hover {
+    color: var(--danger);
+}
+
+.login-prompt {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--card-bg);
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+}
+
+.login-prompt h2 {
+    margin-bottom: 1rem;
+}
+
+.login-prompt p {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.btn-login-large {
+    display: inline-block;
+    background-color: #4285F4;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.btn-login-large:hover {
+    background-color: #3367D6;
+}
